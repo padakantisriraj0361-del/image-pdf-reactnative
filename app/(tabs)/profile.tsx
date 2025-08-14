@@ -146,7 +146,7 @@ export default function ProfileScreen() {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.switchButton}
           onPress={() => setIsLoginMode(!isLoginMode)}
         >
@@ -156,7 +156,7 @@ export default function ProfileScreen() {
               : "Already have an account? Login"
             }
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

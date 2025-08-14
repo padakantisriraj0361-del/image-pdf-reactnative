@@ -17,20 +17,16 @@ interface RegisterResponse {
 }
 
 class APIService {
-  private baseURL = 'https://api.example.com'; // Replace with your actual API URL
+  private baseURL = 'https://react-file-upload-4nlo.onrender.com/api'; // Replace with your actual API URL
 
   async login(email: string, password: string): Promise<LoginResponse> {
-    // Simulate API call
-    await this.delay(1000);
-    
-    // Mock successful login
-    return {
-      user: {
-        id: '1',
-        email: email,
-      },
-      token: 'mock_token_' + Date.now(),
-    };
+    const response = await this.makeRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+
+    // You can adjust this to match your actual API response structure
+    return response;
   }
 
   async register(email: string, password: string): Promise<RegisterResponse> {
@@ -46,22 +42,53 @@ class APIService {
       token: 'mock_token_' + Date.now(),
     };
   }
+async uploadPDFFile(file: File): Promise<{ success: boolean; url?: string }> {
+  const { token } = useAuthStore.getState();
 
+  if (!token) {
+    throw new Error('No authentication token available');
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${this.baseURL}/files/upload`, {
+    method: 'POST',
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+      // Do not set Content-Type, browser will handle it
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.status}`);
+  }
+
+  return response.json();
+}
   async uploadPDF(pdfUri: string): Promise<{ success: boolean; url?: string }> {
     const { token } = useAuthStore.getState();
     
     if (!token) {
       throw new Error('No authentication token available');
     }
+    const response = await this.makeRequest('/files/upload', {
+      method: 'POST',
+      body: JSON.stringify({ pdfUri }),
+    });
 
-    // Simulate file upload
-    await this.delay(2000);
+    // You can adjust this to match your actual API response structure
+    return response;
+
+    // // Simulate file upload
+    // await this.delay(2000);
     
-    // Mock successful upload
-    return {
-      success: true,
-      url: `https://api.example.com/files/document_${Date.now()}.pdf`,
-    };
+    // // Mock successful upload
+    // return {
+    //   success: true,
+    //   url: `https://api.example.com/files/document_${Date.now()}.pdf`,
+    // };
   }
 
   private delay(ms: number): Promise<void> {

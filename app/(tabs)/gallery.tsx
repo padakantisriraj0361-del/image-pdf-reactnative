@@ -35,8 +35,8 @@ export default function GalleryScreen() {
   }
 
   const toggleImageSelection = (id: string) => {
-    setSelectedImages(prev => 
-      prev.includes(id) 
+    setSelectedImages(prev =>
+      prev.includes(id)
         ? prev.filter(imgId => imgId !== id)
         : [...prev, id]
     );
@@ -52,9 +52,9 @@ export default function GalleryScreen() {
     try {
       const selectedImageObjects = images.filter(img => selectedImages.includes(img.id));
       const pdfUri = await pdfService.createPDF(selectedImageObjects);
-      
+
       Alert.alert(
-        'PDF Generated', 
+        'PDF Generated',
         'PDF created successfully! Do you want to upload it?',
         [
           { text: 'Cancel', style: 'cancel' },
@@ -72,7 +72,16 @@ export default function GalleryScreen() {
   const uploadPDF = async (pdfUri: string) => {
     setIsUploading(true);
     try {
-      const response = await apiService.uploadPDF(pdfUri);
+      // const response = await apiService.uploadPDF(pdfUri);
+      const response = await fetch(pdfUri);
+      const blob = await response.blob();
+
+      // Create a File object (if needed, you can use Blob directly)
+      const file = new File([blob], 'document.pdf', { type: 'application/pdf' });
+
+      // Upload using the correct method
+      const uploadResponse = await apiService.uploadPDFFile(file);
+
       Alert.alert('Success', 'PDF uploaded successfully!');
       setSelectedImages([]);
     } catch (error) {
@@ -96,9 +105,9 @@ export default function GalleryScreen() {
 
   const renderImageItem = ({ item }: { item: any }) => {
     const isSelected = selectedImages.includes(item.id);
-    
+
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.imageContainer, isSelected && styles.selectedImage]}
         onPress={() => toggleImageSelection(item.id)}
         onLongPress={() => setPreviewImage(item.uri)}
