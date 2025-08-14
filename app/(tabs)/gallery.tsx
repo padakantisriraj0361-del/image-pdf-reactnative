@@ -15,15 +15,24 @@ import { FileText, Trash2, Download, X } from 'lucide-react-native';
 import { useImageStore } from '@/stores/imageStore';
 import { pdfService } from '@/services/pdfService';
 import { apiService } from '@/services/apiService';
+import { useAuthStore } from '@/stores/authStore';
+import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function GalleryScreen() {
+  const { isAuthenticated } = useAuthStore();
   const { images, removeImage } = useImageStore();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    router.replace('/(tabs)/profile');
+    return null;
+  }
 
   const toggleImageSelection = (id: string) => {
     setSelectedImages(prev => 

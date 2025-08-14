@@ -12,15 +12,24 @@ import { Camera, RotateCcw, Circle } from 'lucide-react-native';
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import { useImageStore } from '@/stores/imageStore';
+import { useAuthStore } from '@/stores/authStore';
+import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 export default function CameraScreen() {
+  const { isAuthenticated } = useAuthStore();
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const cameraRef = useRef<CameraView>(null);
   const { addImage } = useImageStore();
+
+  // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    router.replace('/(tabs)/profile');
+    return null;
+  }
 
   if (!permission) {
     return <View style={styles.container} />;

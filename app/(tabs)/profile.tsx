@@ -99,7 +99,10 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
-          {isLoginMode ? 'Login' : 'Register'}
+          {isLoginMode ? 'Welcome Back' : 'Create Account'}
+        </Text>
+        <Text style={styles.subtitle}>
+          {isLoginMode ? 'Sign in to continue' : 'Join us to get started'}
         </Text>
       </View>
 

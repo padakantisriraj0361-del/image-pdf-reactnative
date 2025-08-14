@@ -22,6 +22,15 @@ export default function TabLayout() {
         },
       }}>
       <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Login',
+          tabBarIcon: ({ size, color }) => (
+            <User size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="camera"
         options={{
           title: 'Camera',
@@ -36,15 +45,6 @@ export default function TabLayout() {
           title: 'Gallery',
           tabBarIcon: ({ size, color }) => (
             <FolderOpen size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ size, color }) => (
-            <User size={size} color={color} />
           ),
         }}
       />
